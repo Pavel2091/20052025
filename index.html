@@ -2,71 +2,97 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>🎉 С Днём Рождения!</title>
     <style>
-        body {
+        :root {
+            --main-color: #d35400;
+            --text-color: #34495e;
+            --bg-gradient: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+        
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            height: 100vh;
+        }
+        
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: var(--bg-gradient);
+            font-family: 'Comic Sans MS', system-ui, -apple-system, sans-serif;
             cursor: pointer;
-            overflow: hidden;
+            overflow-x: hidden;
             text-align: center;
+            touch-action: manipulation;
         }
         
         .container {
+            position: relative;
             z-index: 10;
+            width: 100%;
+            max-width: 500px;
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            margin: 15px;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         
         h1 {
-            color: #d35400;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            color: var(--main-color);
+            font-size: clamp(1.5rem, 6vw, 2.5rem);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
             animation: bounce 2s infinite;
+            line-height: 1.3;
         }
         
         p {
-            font-size: 1.5rem;
-            color: #34495e;
-            line-height: 1.6;
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            color: var(--text-color);
+            line-height: 1.5;
+            margin: 10px 0;
         }
         
         .signature {
-            margin-top: 30px;
+            margin-top: 20px;
             font-style: italic;
             color: #7f8c8d;
+            font-size: clamp(0.9rem, 3.5vw, 1.2rem);
         }
         
         canvas {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
+            pointer-events: none;
         }
         
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-10px); }
         }
         
         .balloon {
             position: absolute;
-            width: 50px;
-            height: 60px;
+            width: clamp(30px, 8vw, 50px);
+            height: clamp(36px, 9vw, 60px);
             background-color: #e74c3c;
             border-radius: 50%;
             animation: float 15s infinite linear;
+            z-index: 0;
         }
         
         @keyframes float {
@@ -74,14 +100,33 @@
             100% { transform: translateY(-100px) translateX(100px); }
         }
 
-        /* Стиль для скрытого аудио */
         #audioElement {
             display: none;
+        }
+
+        /* Адаптация для очень маленьких экранов */
+        @media (max-height: 600px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            h1 {
+                margin-bottom: 10px;
+            }
+            p {
+                margin: 8px 0;
+            }
+        }
+
+        /* Горизонтальная ориентация */
+        @media (orientation: landscape) {
+            .container {
+                max-width: 70%;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Аудио для салюта (автозагрузка отключена) -->
     <audio id="audioElement" preload="auto">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-happy-pop-2068.mp3" type="audio/mpeg">
         Ваш браузер не поддерживает аудио.
@@ -90,19 +135,23 @@
     <canvas id="confetti"></canvas>
     
     <div class="container">
-        <h1>🎂 Дорогой наш Саша! 🎉</h1>
-		<p>💪 Нервов, как канат, стальных 🧗‍♂️</p>
-        <p>🎯 Решений точных и мужских 🤘</p>
-        <p>🏋️‍♂️ Сил, здоровья и удачи 🍀</p>
-	<p>💰 Приростов денежных в придачу 📈</p>
-	<p>✨ Всех желаний исполнения 🧞‍♂️</p>
-        <p>🔥 Тебе желаем в день рождения! 🎂</p>
-        <p class="signature">Нажми на любую часть на экрана для салюта!</p>
+        <h1>🎂 С Днём Рождения!</h1>
+        <p>Дорогой друг!</p>
+        <p>Желаю тебе счастья, радости,</p>
+        <p>крепкого здоровья и исполнения</p>
+        <p>всех заветных желаний!</p>
+        <p class="signature">Нажми на экран для салюта!</p>
     </div>
     
     <script>
-        // Создаем воздушные шарики
-        for (let i = 0; i < 10; i++) {
+        // Оптимизация для мобильных устройств
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        // Создаем воздушные шарики (меньше на мобильных)
+        const balloonCount = isMobile() ? 6 : 10;
+        for (let i = 0; i < balloonCount; i++) {
             createBalloon();
         }
         
@@ -112,35 +161,50 @@
             balloon.style.left = Math.random() * 100 + 'vw';
             balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
             balloon.style.animationDuration = 10 + Math.random() * 20 + 's';
+            balloon.style.animationDelay = Math.random() * 5 + 's';
             document.body.appendChild(balloon);
             
             setTimeout(() => {
                 balloon.remove();
-                createBalloon();
+                if (document.body.contains(balloon)) {
+                    createBalloon();
+                }
             }, 15000);
         }
         
-        // Конфетти-эффект
+        // Конфетти-эффект с адаптацией
         const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
         
         const particles = [];
         const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6'];
         const audio = document.getElementById('audioElement');
+        const particleCount = isMobile() ? 100 : 150;
 
         function createConfetti(e) {
             // Воспроизводим звук салюта
-            audio.currentTime = 0; // Перематываем на начало
-            audio.play().catch(e => console.log("Автовоспроизведение заблокировано: ", e));
+            if (audio.paused) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Автовоспроизведение заблокировано: ", e));
+            }
             
             // Создаем частицы конфетти
-            for (let i = 0; i < 150; i++) {
+            const x = e?.clientX || canvas.width / 2;
+            const y = e?.clientY || canvas.height / 2;
+            
+            for (let i = 0; i < particleCount; i++) {
                 particles.push({
-                    x: e.clientX || canvas.width / 2,
-                    y: e.clientY || canvas.height / 2,
-                    size: Math.random() * 12 + 3,
+                    x: x,
+                    y: y,
+                    size: Math.random() * 10 + (isMobile() ? 2 : 3),
                     color: colors[Math.floor(Math.random() * colors.length)],
                     speedX: Math.random() * 8 - 4,
                     speedY: Math.random() * -15 - 5,
@@ -178,14 +242,14 @@
         
         // Обработчики событий
         window.addEventListener('click', createConfetti);
-        window.addEventListener('touchstart', createConfetti);
+        window.addEventListener('touchstart', createConfetti, { passive: true });
         
         // Автозапуск анимации при загрузке
         updateConfetti();
         
         // Автоматический салют через 1 секунду после загрузки
         setTimeout(() => {
-            createConfetti({clientX: canvas.width/2, clientY: canvas.height/2});
+            createConfetti();
         }, 1000);
     </script>
 </body>
