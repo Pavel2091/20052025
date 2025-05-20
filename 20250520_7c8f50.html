@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 С Днём Рождения!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            cursor: pointer;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .container {
+            z-index: 10;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #d35400;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: bounce 2s infinite;
+        }
+        
+        p {
+            font-size: 1.5rem;
+            color: #34495e;
+            line-height: 1.6;
+        }
+        
+        .signature {
+            margin-top: 30px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 60px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); }
+            100% { transform: translateY(-100px) translateX(100px); }
+        }
+
+        /* Стиль для скрытого аудио */
+        #audioElement {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Аудио для салюта (автозагрузка отключена) -->
+    <audio id="audioElement" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-happy-pop-2068.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
+    </audio>
+
+    <canvas id="confetti"></canvas>
+    
+    <div class="container">
+        <h1>🎂 Дорогой наш Саша! 🎉</h1>
+		<p>💪 Нервов, как канат, стальных 🧗‍♂️</p>
+        <p>🎯 Решений точных и мужских 🤘</p>
+        <p>🏋️‍♂️ Сил, здоровья и удачи 🍀</p>
+	<p>💰 Приростов денежных в придачу 📈</p>
+	<p>✨ Всех желаний исполнения 🧞‍♂️</p>
+        <p>🔥 Тебе желаем в день рождения! 🎂</p>
+        <p class="signature">Нажми на любую часть на экрана для салюта!</p>
+    </div>
+    
+    <script>
+        // Создаем воздушные шарики
+        for (let i = 0; i < 10; i++) {
+            createBalloon();
+        }
+        
+        function createBalloon() {
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            balloon.style.left = Math.random() * 100 + 'vw';
+            balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+            balloon.style.animationDuration = 10 + Math.random() * 20 + 's';
+            document.body.appendChild(balloon);
+            
+            setTimeout(() => {
+                balloon.remove();
+                createBalloon();
+            }, 15000);
+        }
+        
+        // Конфетти-эффект
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const particles = [];
+        const colors = ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6'];
+        const audio = document.getElementById('audioElement');
+
+        function createConfetti(e) {
+            // Воспроизводим звук салюта
+            audio.currentTime = 0; // Перематываем на начало
+            audio.play().catch(e => console.log("Автовоспроизведение заблокировано: ", e));
+            
+            // Создаем частицы конфетти
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: e.clientX || canvas.width / 2,
+                    y: e.clientY || canvas.height / 2,
+                    size: Math.random() * 12 + 3,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedX: Math.random() * 8 - 4,
+                    speedY: Math.random() * -15 - 5,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 5 - 2.5
+                });
+            }
+        }
+        
+        function updateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+                
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.speedY += 0.1;
+                p.rotation += p.rotationSpeed;
+                
+                if (p.y > canvas.height || p.x < 0 || p.x > canvas.width) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            
+            requestAnimationFrame(updateConfetti);
+        }
+        
+        // Обработчики событий
+        window.addEventListener('click', createConfetti);
+        window.addEventListener('touchstart', createConfetti);
+        
+        // Автозапуск анимации при загрузке
+        updateConfetti();
+        
+        // Автоматический салют через 1 секунду после загрузки
+        setTimeout(() => {
+            createConfetti({clientX: canvas.width/2, clientY: canvas.height/2});
+        }, 1000);
+    </script>
+</body>
+</html>
